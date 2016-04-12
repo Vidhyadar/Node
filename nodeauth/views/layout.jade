@@ -26,7 +26,8 @@ html(lang='en')
                         li(class=(title=='Members' ? 'active': ''))
                             a(href='/users/logout') Logout                    
                             
-        .container            
+        .container
+        != messages()            
         block content
         
         script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
