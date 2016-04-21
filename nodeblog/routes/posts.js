@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var multer = require('multer');
-var upload = multer({ dest: 'uploads/' })
+var upload = multer({ dest: './public/uploads-images' });
 var mongo = require('mongodb');
 var db = require('monk')('localhost/nodeblog');
 
@@ -25,7 +25,7 @@ router.post('/add', upload.single('mainimage'), function(req, res, next) {
   var date =  new Date();
   var mainimage = 'No Image File';
   if(req.file) {
-    mainimage = req.file.name;
+    mainimage = req.file.filename;
   }
   
   req.checkBody('title','Title filed is required').notEmpty();
