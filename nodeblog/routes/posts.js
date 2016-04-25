@@ -6,6 +6,32 @@ var mongo = require('mongodb');
 var db = require('monk')('localhost/nodeblog');
 
 /* GET posts listing. */
+
+router.get('/show/:id', function(req, res, next) {
+  var posts = db.get('posts');
+  
+  posts.find({_id: req.params.id}, {}, function (err, posts) {
+    res.render('index', {
+      "title": req.params.id,
+      "posts":posts     
+    });
+  });
+});
+
+
+router.get('/category/:category', function(req, res, next) {
+  var posts = db.get('posts');
+  
+  posts.find({category: req.params.category}, {}, function (err, posts) {
+    res.render('index', {
+      "title": req.params.category,
+      "posts":posts     
+    });
+  });
+});
+
+
+
 router.get('/add', function(req, res, next) {
   var categories = db.get('categories');
   
