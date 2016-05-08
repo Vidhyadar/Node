@@ -6,8 +6,8 @@ exports = module.exports = function(app, mongoose) {
     name: { type: String, required: true },
     description: { type: String },
     venu: { type: String },
-    date: { type: String, required: true },
-    startTime: { type: Date },
+    date: { type: Date, required: true },
+    startTime: { type: String },
     endTime: { type: String },
     username: { type: String }
   });
