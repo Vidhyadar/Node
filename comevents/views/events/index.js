@@ -35,3 +35,61 @@ exports.find = function(req, res, next) {
   });
     
 };
+
+exports.read = function(req, res, next) {
+  req.app.db.models.Event.findById(req.params.id).exec(function(err, event) {
+    if(err) {
+      return next(err);
+    }
+    
+    if(req.xhr){
+      res.send(event);
+    } else {
+      res.render('events/details', {event:event});
+    }
+  });
+};
+
+exports.add = function(req, res, next) {
+  if(!req.isAuthenticated()) {
+    req.flash('Error', 'Your are not logged in');
+    res.location('/events');
+    res.redirect('/events');
+  }
+  res.render('events/add');
+};
+
+exports.create = function(req, res, next) {
+  var workflow = req.app.utility.workflow(req, res);
+  workflow.on('validate', function () {
+    if(!req.body.name) {
+      workflow.outcome.errors.push('Please enter a name');
+      return workflow.emit('response');
+    }
+    return workflow.emit('createEvent');
+  });
+  
+  workflow.on('createEvent', function () {
+    var filedsToSet = {
+      name: req.body.name,
+      description: req.body.description,
+      venu: req.body.venu,
+      date: req.body.date,
+      startTime: req.body.startTime,
+      endTime: req.body.endTime,
+      username: req.user.username
+    };
+    
+    req.app.db.models.Event.create(filedsToSet, function (err, event) {
+      if(err) {
+        return workflow.emit('exception', err);
+      }
+      workflow.outcome.record = event;
+      req.flash('success', 'Event added!');
+      
+      res.location('/events');
+      res.redirect('/events');
+    }); 
+  });
+  workflow.emit('validate');
+};
